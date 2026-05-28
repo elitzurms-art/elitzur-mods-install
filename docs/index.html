@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>התקנת Voice Chat — Elitzur Games</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background:#1a1a2e; color:#eee; max-width: 760px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+  h1 { color:#09add3; }
+  h2 { color:#ffd200; border-bottom: 1px solid #444; padding-bottom: 5px; }
+  .tab-bar { display:flex; gap:8px; margin-bottom:16px; }
+  .tab { flex:1; padding:10px; background:#16213e; border:none; color:#ccc; cursor:pointer; border-radius:6px; font-size:15px; }
+  .tab.active { background:#09add3; color:#000; font-weight:bold; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .step { background:#16213e; padding:12px 16px; margin:10px 0; border-radius:8px; border-right:4px solid #09add3; }
+  .cmd { background:#0d0d1a; padding:10px; border-radius:5px; overflow-x:auto; direction:ltr; text-align:left; font-family: Consolas, Monaco, monospace; font-size:13px; color:#a5e75f; user-select:all; }
+  .copy-btn { background:#ff9966; border:none; color:#000; padding:6px 12px; border-radius:5px; cursor:pointer; font-weight:bold; margin-top:5px; }
+  .copy-btn:hover { background:#ffd200; }
+  a { color:#09add3; }
+  .warn { background:#3a2a1a; padding:10px; border-radius:6px; border-right:4px solid #ffd200; margin: 10px 0; }
+  ol { padding-right: 24px; }
+  ol > li { margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>🎙️ התקנת Voice Chat — Elitzur Games</h1>
+<p>השרת תומך ב-Voice Chat (Simple Voice Chat). כדי להשתמש בו, צריך להתקין אותו ב-Minecraft שלך.</p>
+<p>בחר את מערכת ההפעלה שלך:</p>
+
+<div class="tab-bar">
+  <button class="tab" data-target="win">Windows</button>
+  <button class="tab" data-target="mac">macOS</button>
+  <button class="tab" data-target="manual">התקנה ידנית</button>
+</div>
+
+<!-- Windows -->
+<div id="win" class="panel">
+  <h2>התקנה אוטומטית — Windows</h2>
+  <div class="warn">⚠ <b>חשוב</b>: הפעל את Minecraft <u>פעם אחת</u> לפני שאתה ממשיך, כדי שה-launcher יוריד Java.</div>
+  <ol>
+    <li>לחץ <b>Win+X</b> ובחר <b>"Windows PowerShell"</b> (לא Terminal, לא CMD)</li>
+    <li>העתק והדבק את הפקודה הזו, ולחץ Enter:</li>
+  </ol>
+  <div class="cmd" id="cmd-win">Set-ExecutionPolicy -Scope Process Bypass -Force; irm https://elitzurms-art.github.io/elitzur-mods-install/install.ps1 | iex</div>
+  <button class="copy-btn" data-copy="cmd-win">📋 העתק</button>
+  <ol start="3">
+    <li>חכה עד שיופיע "ההתקנה הסתיימה"</li>
+    <li>פתח את Minecraft Launcher</li>
+    <li>בחר את הפרופיל <b>"Elitzur Games (Fabric 26.1.2)"</b></li>
+    <li>לחץ Play והתחבר לשרת — תראה אייקון מיקרופון בפינה</li>
+  </ol>
+</div>
+
+<!-- macOS -->
+<div id="mac" class="panel">
+  <h2>התקנה אוטומטית — macOS</h2>
+  <div class="warn">⚠ <b>חשוב</b>: הפעל את Minecraft <u>פעם אחת</u> לפני שאתה ממשיך.</div>
+  <ol>
+    <li>פתח את <b>Terminal</b> (אפליקציה ב-Applications → Utilities)</li>
+    <li>העתק והדבק את הפקודה הזו, ולחץ Enter:</li>
+  </ol>
+  <div class="cmd" id="cmd-mac">curl -fsSL https://elitzurms-art.github.io/elitzur-mods-install/install.sh | bash</div>
+  <button class="copy-btn" data-copy="cmd-mac">📋 העתק</button>
+  <ol start="3">
+    <li>חכה עד שיופיע "ההתקנה הסתיימה"</li>
+    <li>פתח את Minecraft Launcher</li>
+    <li>בחר את הפרופיל <b>"Elitzur Games (Fabric 26.1.2)"</b></li>
+    <li>לחץ Play והתחבר לשרת</li>
+  </ol>
+</div>
+
+<!-- Manual -->
+<div id="manual" class="panel">
+  <h2>התקנה ידנית (אם האוטומטי לא עובד)</h2>
+  <div class="step">
+    <b>שלב 1: התקן Fabric Loader</b><br>
+    <a href="https://fabricmc.net/use/installer/" target="_blank">https://fabricmc.net/use/installer/</a><br>
+    הורד, פתח, בחר <b>Minecraft Version: 26.1.2</b>, לחץ Install.
+  </div>
+  <div class="step">
+    <b>שלב 2: פתח את תיקיית mods</b><br>
+    <b>Windows:</b> <code>%APPDATA%\.minecraft\mods\</code> (אם לא קיימת — צור)<br>
+    <b>macOS:</b> <code>~/Library/Application Support/minecraft/mods/</code>
+  </div>
+  <div class="step">
+    <b>שלב 3: הורד את שני הקבצים הבאים לתוך תיקיית mods:</b><br>
+    <ul>
+      <li><a href="https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric-api-0.150.0%2B26.1.2.jar">Fabric API (0.150.0+26.1.2)</a></li>
+      <li><a href="https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar">Simple Voice Chat (2.6.18+26.1.2)</a></li>
+    </ul>
+  </div>
+  <div class="step">
+    <b>שלב 4: ב-launcher</b> — בחר פרופיל "fabric-loader-26.1.2" ולחץ Play.
+  </div>
+</div>
+
+<hr style="margin-top:30px; border-color:#333">
+<p style="text-align:center; color:#666; font-size:13px;">נתקלת בבעיה? פנה למפעיל השרת.</p>
+
+<script>
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+function show(name) {
+  tabs.forEach(t => t.classList.toggle('active', t.dataset.target === name));
+  panels.forEach(p => p.classList.toggle('active', p.id === name));
+}
+tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.target)));
+
+// Auto-detect OS
+const ua = navigator.userAgent + navigator.platform;
+if (/Win/.test(ua)) show('win');
+else if (/Mac|iPhone|iPad/.test(ua)) show('mac');
+else show('manual');
+
+// Copy buttons
+document.querySelectorAll('.copy-btn').forEach(b => b.addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent.trim());
+  const orig = b.textContent;
+  b.textContent = '✓ הועתק';
+  setTimeout(() => b.textContent = orig, 1500);
+}));
+</script>
+</body>
+</html>

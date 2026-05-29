@@ -12,6 +12,8 @@ $XAEROMAP     = 'https://cdn.modrinth.com/data/1bokaNcj/versions/65OfA4xM/xaerom
 $SODIUM       = 'https://cdn.modrinth.com/data/AANobbMI/versions/eRJU33Hp/sodium-fabric-0.8.12%2Bmc26.1.2.jar'
 $EMOTECRAFT   = 'https://cdn.modrinth.com/data/pZ2wrerK/versions/ZkP5YEad/emotecraft-for-MC26.1.2-3.3.0-a.build.150.jar'
 $ZOOMIFY      = 'https://cdn.modrinth.com/data/w7ThoJFB/versions/3zi0VJPK/zoomify-2.16.0%2B26.1.jar'
+$SODIUMEXTRA  = 'https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar'
+$LAMBDYN      = 'https://cdn.modrinth.com/data/yBW8D80W/versions/UnhzVQJV/lambdynamiclights-4.10.2%2B26.1.2.jar'
 $FULLBRIGHT   = 'https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip'
 $FB_FILE      = 'Fullbright-UB-1.21 fub-6.0.zip'
 $GOLDCARROT   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip'
@@ -105,11 +107,17 @@ Invoke-WebRequest -Uri $SODIUM     -OutFile $soPath  -UseBasicParsing
 Ok "Sodium → $soPath"
 $emPath = "$MODS_DIR\emotecraft-for-MC26.1.2-3.3.0-a.build.150.jar"
 $zmPath = "$MODS_DIR\zoomify-2.16.0+26.1.jar"
-Get-ChildItem "$MODS_DIR\emotecraft-*.jar","$MODS_DIR\zoomify-*.jar" -ErrorAction SilentlyContinue | Remove-Item -Force
-Invoke-WebRequest -Uri $EMOTECRAFT -OutFile $emPath -UseBasicParsing
+$sxPath = "$MODS_DIR\sodium-extra-fabric-0.8.7+mc26.1.1.jar"
+$ldPath = "$MODS_DIR\lambdynamiclights-4.10.2+26.1.2.jar"
+Get-ChildItem "$MODS_DIR\emotecraft-*.jar","$MODS_DIR\zoomify-*.jar","$MODS_DIR\sodium-extra-*.jar","$MODS_DIR\lambdynamiclights-*.jar" -ErrorAction SilentlyContinue | Remove-Item -Force
+Invoke-WebRequest -Uri $EMOTECRAFT  -OutFile $emPath -UseBasicParsing
 Ok "Emotecraft → $emPath"
-Invoke-WebRequest -Uri $ZOOMIFY    -OutFile $zmPath -UseBasicParsing
+Invoke-WebRequest -Uri $ZOOMIFY     -OutFile $zmPath -UseBasicParsing
 Ok "Zoomify → $zmPath"
+Invoke-WebRequest -Uri $SODIUMEXTRA -OutFile $sxPath -UseBasicParsing
+Ok "Sodium Extra → $sxPath"
+Invoke-WebRequest -Uri $LAMBDYN     -OutFile $ldPath -UseBasicParsing
+Ok "LambDynamicLights → $ldPath"
 
 # 6. Download resource packs
 Step 6 'מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)...'

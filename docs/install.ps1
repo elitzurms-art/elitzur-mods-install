@@ -10,6 +10,10 @@ $FABRIC_API   = 'https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric
 $VOICECHAT    = 'https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar'
 $FULLBRIGHT   = 'https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip'
 $FB_FILE      = 'Fullbright-UB-1.21 fub-6.0.zip'
+$GOLDCARROT   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip'
+$GC_FILE      = 'Golden-Carrot Hunger Bar.zip'
+$FANCYHEART   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/fancy-heart-bar-1-21.zip'
+$FH_FILE      = 'fancy-heart-bar-1-21.zip'
 $MC_DIR       = "$env:APPDATA\.minecraft"
 $MODS_DIR     = "$MC_DIR\mods"
 $RP_DIR       = "$MC_DIR\resourcepacks"
@@ -90,17 +94,21 @@ Ok "Fabric API → $apiPath"
 Invoke-WebRequest -Uri $VOICECHAT  -OutFile $vcPath  -UseBasicParsing
 Ok "Voice Chat → $vcPath"
 
-# 6. Download resource pack
-Step 6 'מוריד את Fullbright UB resource pack...'
-$rpPath = "$RP_DIR\$FB_FILE"
-Get-ChildItem "$RP_DIR\Fullbright-UB-*.zip" -ErrorAction SilentlyContinue | Remove-Item -Force
-Invoke-WebRequest -Uri $FULLBRIGHT -OutFile $rpPath -UseBasicParsing
-Ok "Fullbright UB → $rpPath"
+# 6. Download resource packs
+Step 6 'מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)...'
+Get-ChildItem "$RP_DIR\$FB_FILE","$RP_DIR\$GC_FILE","$RP_DIR\$FH_FILE" -ErrorAction SilentlyContinue | Remove-Item -Force
+Invoke-WebRequest -Uri $FULLBRIGHT -OutFile "$RP_DIR\$FB_FILE" -UseBasicParsing
+Ok "Fullbright UB"
+Invoke-WebRequest -Uri $GOLDCARROT -OutFile "$RP_DIR\$GC_FILE" -UseBasicParsing
+Ok "Golden-Carrot Hunger Bar"
+Invoke-WebRequest -Uri $FANCYHEART -OutFile "$RP_DIR\$FH_FILE" -UseBasicParsing
+Ok "Fancy Heart Bar"
 
 # 6b. Enable in options.txt
-Step '6b' 'מפעיל את ה-resource pack ב-options.txt...'
+Step '6b' 'מפעיל את ה-resource packs ב-options.txt...'
 $optionsPath = "$MC_DIR\options.txt"
-$fbEntry = "file/$FB_FILE"
+# order: top-priority first
+$entries = @("file/$FH_FILE", "file/$GC_FILE", "file/$FB_FILE")
 if (Test-Path $optionsPath) {
     try {
         $lines = Get-Content $optionsPath
@@ -110,16 +118,21 @@ if (Test-Path $optionsPath) {
                 $found = $true
                 $jsonPart = $line.Substring('resourcePacks:'.Length)
                 try { $arr = [System.Collections.ArrayList]@($jsonPart | ConvertFrom-Json) } catch { $arr = [System.Collections.ArrayList]@() }
-                if ($arr -notcontains $fbEntry) { $arr.Insert(0, $fbEntry) }
+                # remove existing instances then re-insert at the front (preserving the user's other packs)
+                foreach ($e in $entries) { while ($arr.Contains($e)) { $arr.Remove($e) } }
+                for ($i = $entries.Count - 1; $i -ge 0; $i--) { $arr.Insert(0, $entries[$i]) }
                 "resourcePacks:" + ($arr | ConvertTo-Json -Compress)
             } else { $line }
         }
-        if (-not $found) { $newLines += 'resourcePacks:["vanilla","' + $fbEntry + '"]' }
+        if (-not $found) {
+            $allEntries = $entries + @("vanilla")
+            $newLines += 'resourcePacks:' + ($allEntries | ConvertTo-Json -Compress)
+        }
         $newLines | Set-Content -Path $optionsPath -Encoding UTF8
-        Ok "Fullbright פעיל בהגדרות"
+        Ok "כל ה-packs פעילים בהגדרות"
     } catch { Write-Host "  ⚠ לא הצלחתי לעדכן את options.txt — הפעל ידנית ב-Options → Resource Packs" -ForegroundColor Yellow }
 } else {
-    Write-Host "  ⚠ options.txt לא נמצא — הפעלת Minecraft פעם אחת תיצור אותו, אז הפעל את ה-pack ידנית" -ForegroundColor Yellow
+    Write-Host "  ⚠ options.txt לא נמצא — הפעל ידנית ב-Options → Resource Packs" -ForegroundColor Yellow
 }
 
 # Done

@@ -12,6 +12,10 @@ FABRIC_API="https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric-api-
 VOICECHAT="https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar"
 FULLBRIGHT="https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip"
 FB_FILE="Fullbright-UB-1.21 fub-6.0.zip"
+GOLDCARROT="https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip"
+GC_FILE="Golden-Carrot Hunger Bar.zip"
+FANCYHEART="https://elitzurms-art.github.io/elitzur-mods-install/packs/fancy-heart-bar-1-21.zip"
+FH_FILE="fancy-heart-bar-1-21.zip"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   MC_DIR="$HOME/Library/Application Support/minecraft"
@@ -91,40 +95,51 @@ ok "Fabric API → fabric-api-0.150.0+26.1.2.jar"
 curl -fsSL "$VOICECHAT" -o "$MODS_DIR/voicechat-fabric-2.6.18+26.1.2.jar"
 ok "Voice Chat → voicechat-fabric-2.6.18+26.1.2.jar"
 
-# 6. Download resource pack and enable
-step 6 "מוריד את Fullbright UB resource pack..."
-rm -f "$RP_DIR"/Fullbright-UB-*.zip 2>/dev/null
+# 6. Download resource packs and enable
+step 6 "מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)..."
+rm -f "$RP_DIR/$FB_FILE" "$RP_DIR/$GC_FILE" "$RP_DIR/$FH_FILE" 2>/dev/null
 curl -fsSL "$FULLBRIGHT" -o "$RP_DIR/$FB_FILE"
-ok "Fullbright UB → $FB_FILE"
+ok "Fullbright UB"
+curl -fsSL "$GOLDCARROT" -o "$RP_DIR/$GC_FILE"
+ok "Golden-Carrot Hunger Bar"
+curl -fsSL "$FANCYHEART" -o "$RP_DIR/$FH_FILE"
+ok "Fancy Heart Bar"
 
-step 6b "מפעיל את ה-resource pack ב-options.txt..."
+step 6b "מפעיל את ה-resource packs ב-options.txt..."
 OPTIONS="$MC_DIR/options.txt"
 if [ -f "$OPTIONS" ]; then
-  python3 - <<PYEOF && ok "Fullbright פעיל בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית — תפעיל ידנית ב-Options → Resource Packs"
-import json, re
-p = "$OPTIONS"
-fb = "file/$FB_FILE"
+  FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית — תפעיל ידנית ב-Options → Resource Packs"
+import json, os
+p = os.environ.get("OPTIONS", "options.txt")
+import sys
+PYEOF
+  # actual logic
+  FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" OPT="$OPTIONS" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית"
+import json, os
+p = os.environ["OPT"]
+adds = ["file/" + os.environ["FH"], "file/" + os.environ["GC"], "file/" + os.environ["FB"]]
 lines = open(p).read().splitlines()
-found_rp = False
+found = False
 out = []
 for line in lines:
     if line.startswith("resourcePacks:"):
-        found_rp = True
+        found = True
         try:
             arr = json.loads(line[len("resourcePacks:"):])
         except Exception:
             arr = []
-        if fb not in arr:
-            arr.insert(0, fb)
+        for a in reversed(adds):
+            if a in arr: arr.remove(a)
+            arr.insert(0, a)
         out.append("resourcePacks:" + json.dumps(arr, ensure_ascii=False))
     else:
         out.append(line)
-if not found_rp:
-    out.append('resourcePacks:["vanilla","'+fb+'"]')
+if not found:
+    out.append('resourcePacks:' + json.dumps(adds + ["vanilla"], ensure_ascii=False))
 open(p, "w").write("\n".join(out) + "\n")
 PYEOF
 else
-  echo "  ⚠ options.txt לא נמצא — הפעלת Minecraft פעם אחת תיצור אותו, אז הפעל את ה-pack ידנית ב-Options"
+  echo "  ⚠ options.txt לא נמצא — הפעל ידנית ב-Options → Resource Packs"
 fi
 
 # Done

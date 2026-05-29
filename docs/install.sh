@@ -117,7 +117,9 @@ PYEOF
   FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" OPT="$OPTIONS" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית"
 import json, os
 p = os.environ["OPT"]
-adds = ["file/" + os.environ["FH"], "file/" + os.environ["GC"], "file/" + os.environ["FB"]]
+# Order matters: in options.txt the END of the array = TOP of Selected GUI (highest priority).
+# We want Fancy-Heart at very top, then Golden-Carrot, then Fullbright underneath.
+ours = ["file/" + os.environ["FB"], "file/" + os.environ["GC"], "file/" + os.environ["FH"]]
 lines = open(p).read().splitlines()
 found = False
 out = []
@@ -128,14 +130,15 @@ for line in lines:
             arr = json.loads(line[len("resourcePacks:"):])
         except Exception:
             arr = []
-        for a in reversed(adds):
-            if a in arr: arr.remove(a)
-            arr.insert(0, a)
+        for o in ours:
+            while o in arr:
+                arr.remove(o)
+        arr.extend(ours)  # append at end = top of Selected
         out.append("resourcePacks:" + json.dumps(arr, ensure_ascii=False))
     else:
         out.append(line)
 if not found:
-    out.append('resourcePacks:' + json.dumps(adds + ["vanilla"], ensure_ascii=False))
+    out.append('resourcePacks:' + json.dumps(["vanilla"] + ours, ensure_ascii=False))
 open(p, "w").write("\n".join(out) + "\n")
 PYEOF
 else

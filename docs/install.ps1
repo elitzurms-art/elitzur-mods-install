@@ -107,8 +107,9 @@ Ok "Fancy Heart Bar"
 # 6b. Enable in options.txt
 Step '6b' 'מפעיל את ה-resource packs ב-options.txt...'
 $optionsPath = "$MC_DIR\options.txt"
-# order: top-priority first
-$entries = @("file/$FH_FILE", "file/$GC_FILE", "file/$FB_FILE")
+# In options.txt resourcePacks array, the END = TOP of Selected GUI (highest priority).
+# Order: Fullbright first, Golden-Carrot, Fancy-Heart last (= top of Selected).
+$entries = @("file/$FB_FILE", "file/$GC_FILE", "file/$FH_FILE")
 if (Test-Path $optionsPath) {
     try {
         $lines = Get-Content $optionsPath
@@ -118,14 +119,14 @@ if (Test-Path $optionsPath) {
                 $found = $true
                 $jsonPart = $line.Substring('resourcePacks:'.Length)
                 try { $arr = [System.Collections.ArrayList]@($jsonPart | ConvertFrom-Json) } catch { $arr = [System.Collections.ArrayList]@() }
-                # remove existing instances then re-insert at the front (preserving the user's other packs)
+                # remove existing instances then append at end (= top of Selected)
                 foreach ($e in $entries) { while ($arr.Contains($e)) { $arr.Remove($e) } }
-                for ($i = $entries.Count - 1; $i -ge 0; $i--) { $arr.Insert(0, $entries[$i]) }
+                foreach ($e in $entries) { [void]$arr.Add($e) }
                 "resourcePacks:" + ($arr | ConvertTo-Json -Compress)
             } else { $line }
         }
         if (-not $found) {
-            $allEntries = $entries + @("vanilla")
+            $allEntries = @("vanilla") + $entries
             $newLines += 'resourcePacks:' + ($allEntries | ConvertTo-Json -Compress)
         }
         $newLines | Set-Content -Path $optionsPath -Encoding UTF8

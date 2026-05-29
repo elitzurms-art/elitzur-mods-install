@@ -14,6 +14,10 @@ $EMOTECRAFT   = 'https://cdn.modrinth.com/data/pZ2wrerK/versions/ZkP5YEad/emotec
 $ZOOMIFY      = 'https://cdn.modrinth.com/data/w7ThoJFB/versions/3zi0VJPK/zoomify-2.16.0%2B26.1.jar'
 $SODIUMEXTRA  = 'https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar'
 $LAMBDYN      = 'https://cdn.modrinth.com/data/yBW8D80W/versions/UnhzVQJV/lambdynamiclights-4.10.2%2B26.1.2.jar'
+# Dependencies for Emotecraft + Zoomify
+$PAL          = 'https://cdn.modrinth.com/data/ha1mEyJS/versions/Cqy4sfYU/PlayerAnimationLibMerged-1.2.3%2Bmc.26.1.jar'
+$FABKOTLIN    = 'https://cdn.modrinth.com/data/Ha28R6CL/versions/2i87JpYj/fabric-language-kotlin-1.13.11%2Bkotlin.2.3.21.jar'
+$YACL         = 'https://cdn.modrinth.com/data/1eAoo2KR/versions/hzww5Tor/yet_another_config_lib_v3-3.9.3%2B26.1-fabric.jar'
 $FULLBRIGHT   = 'https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip'
 $FB_FILE      = 'Fullbright-UB-1.21 fub-6.0.zip'
 $GOLDCARROT   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip'
@@ -118,6 +122,16 @@ Invoke-WebRequest -Uri $SODIUMEXTRA -OutFile $sxPath -UseBasicParsing
 Ok "Sodium Extra → $sxPath"
 Invoke-WebRequest -Uri $LAMBDYN     -OutFile $ldPath -UseBasicParsing
 Ok "LambDynamicLights → $ldPath"
+$palPath = "$MODS_DIR\PlayerAnimationLibMerged-1.2.3+mc.26.1.jar"
+$fkPath  = "$MODS_DIR\fabric-language-kotlin-1.13.11+kotlin.2.3.21.jar"
+$yclPath = "$MODS_DIR\yet_another_config_lib_v3-3.9.3+26.1-fabric.jar"
+Get-ChildItem "$MODS_DIR\PlayerAnimationLib*.jar","$MODS_DIR\fabric-language-kotlin-*.jar","$MODS_DIR\yet_another_config_lib_v3-*.jar" -ErrorAction SilentlyContinue | Remove-Item -Force
+Invoke-WebRequest -Uri $PAL       -OutFile $palPath -UseBasicParsing
+Ok "Player Animation Library → $palPath"
+Invoke-WebRequest -Uri $FABKOTLIN -OutFile $fkPath  -UseBasicParsing
+Ok "Fabric Language Kotlin → $fkPath"
+Invoke-WebRequest -Uri $YACL      -OutFile $yclPath -UseBasicParsing
+Ok "YACL → $yclPath"
 
 # 6. Download resource packs
 Step 6 'מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)...'

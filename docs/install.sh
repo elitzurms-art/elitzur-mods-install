@@ -16,6 +16,10 @@ EMOTECRAFT="https://cdn.modrinth.com/data/pZ2wrerK/versions/ZkP5YEad/emotecraft-
 ZOOMIFY="https://cdn.modrinth.com/data/w7ThoJFB/versions/3zi0VJPK/zoomify-2.16.0%2B26.1.jar"
 SODIUMEXTRA="https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar"
 LAMBDYN="https://cdn.modrinth.com/data/yBW8D80W/versions/UnhzVQJV/lambdynamiclights-4.10.2%2B26.1.2.jar"
+# Dependencies for Emotecraft + Zoomify
+PAL="https://cdn.modrinth.com/data/ha1mEyJS/versions/Cqy4sfYU/PlayerAnimationLibMerged-1.2.3%2Bmc.26.1.jar"
+FABKOTLIN="https://cdn.modrinth.com/data/Ha28R6CL/versions/2i87JpYj/fabric-language-kotlin-1.13.11%2Bkotlin.2.3.21.jar"
+YACL="https://cdn.modrinth.com/data/1eAoo2KR/versions/hzww5Tor/yet_another_config_lib_v3-3.9.3%2B26.1-fabric.jar"
 FULLBRIGHT="https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip"
 FB_FILE="Fullbright-UB-1.21 fub-6.0.zip"
 GOLDCARROT="https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip"
@@ -113,6 +117,14 @@ curl -fsSL "$SODIUMEXTRA" -o "$MODS_DIR/sodium-extra-fabric-0.8.7+mc26.1.1.jar"
 ok "Sodium Extra → sodium-extra-fabric-0.8.7+mc26.1.1.jar"
 curl -fsSL "$LAMBDYN" -o "$MODS_DIR/lambdynamiclights-4.10.2+26.1.2.jar"
 ok "LambDynamicLights → lambdynamiclights-4.10.2+26.1.2.jar"
+# Dependencies
+rm -f "$MODS_DIR"/PlayerAnimationLib*.jar "$MODS_DIR"/fabric-language-kotlin-*.jar "$MODS_DIR"/yet_another_config_lib_v3-*.jar 2>/dev/null
+curl -fsSL "$PAL" -o "$MODS_DIR/PlayerAnimationLibMerged-1.2.3+mc.26.1.jar"
+ok "Player Animation Library → PlayerAnimationLibMerged-1.2.3+mc.26.1.jar"
+curl -fsSL "$FABKOTLIN" -o "$MODS_DIR/fabric-language-kotlin-1.13.11+kotlin.2.3.21.jar"
+ok "Fabric Language Kotlin → fabric-language-kotlin-1.13.11+kotlin.2.3.21.jar"
+curl -fsSL "$YACL" -o "$MODS_DIR/yet_another_config_lib_v3-3.9.3+26.1-fabric.jar"
+ok "YACL → yet_another_config_lib_v3-3.9.3+26.1-fabric.jar"
 
 # 6. Download resource packs and enable
 step 6 "מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)..."

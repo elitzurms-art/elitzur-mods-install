@@ -10,6 +10,7 @@ MC_VERSION="26.1.2"
 FABRIC_INST="https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.1.1/fabric-installer-1.1.1.jar"
 FABRIC_API="https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric-api-0.150.0%2B26.1.2.jar"
 VOICECHAT="https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar"
+XAEROMAP="https://cdn.modrinth.com/data/1bokaNcj/versions/65OfA4xM/xaerominimap-fabric-26.1.2-25.3.14.jar"
 FULLBRIGHT="https://cdn.modrinth.com/data/ItHr72Fy/versions/bjc4gBmv/Fullbright-UB-1.21%20fub-6.0.zip"
 FB_FILE="Fullbright-UB-1.21 fub-6.0.zip"
 GOLDCARROT="https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Carrot%20Hunger%20Bar.zip"
@@ -88,12 +89,14 @@ else
 fi
 
 # 5. Download mods
-step 5 "מוריד את Fabric API + Simple Voice Chat..."
-rm -f "$MODS_DIR"/fabric-api-*.jar "$MODS_DIR"/voicechat-fabric-*.jar 2>/dev/null
+step 5 "מוריד את Fabric API + Simple Voice Chat + Xaero's Minimap..."
+rm -f "$MODS_DIR"/fabric-api-*.jar "$MODS_DIR"/voicechat-fabric-*.jar "$MODS_DIR"/xaerominimap-*.jar 2>/dev/null
 curl -fsSL "$FABRIC_API" -o "$MODS_DIR/fabric-api-0.150.0+26.1.2.jar"
 ok "Fabric API → fabric-api-0.150.0+26.1.2.jar"
 curl -fsSL "$VOICECHAT" -o "$MODS_DIR/voicechat-fabric-2.6.18+26.1.2.jar"
 ok "Voice Chat → voicechat-fabric-2.6.18+26.1.2.jar"
+curl -fsSL "$XAEROMAP" -o "$MODS_DIR/xaerominimap-fabric-26.1.2-25.3.14.jar"
+ok "Xaero's Minimap → xaerominimap-fabric-26.1.2-25.3.14.jar"
 
 # 6. Download resource packs and enable
 step 6 "מוריד resource packs (Fullbright + Golden-Carrot + Fancy-Heart)..."

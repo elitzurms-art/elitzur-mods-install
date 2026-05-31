@@ -115,6 +115,23 @@ Step '4b' 'יוצר פרופיל ב-launchers...'
 $fabricVer = Get-ChildItem "$MC_DIR\versions" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "fabric-loader-*-$MC_VERSION" } | Select-Object -Last 1
 if (-not $fabricVer) { Write-Host "  ⚠ לא נמצאה גרסת Fabric — בחר ידנית ב-launcher" -ForegroundColor Yellow }
 else {
+    # ---- 0) Create a "version" alias folder so the name appears in launcher version dropdown ----
+    $aliasName = "Elitzur Games"
+    $aliasDir = "$MC_DIR\versions\$aliasName"
+    try {
+        if (-not (Test-Path $aliasDir)) { New-Item -ItemType Directory -Path $aliasDir | Out-Null }
+        $aliasJsonPath = "$aliasDir\$aliasName.json"
+        $aliasJson = @{
+            id = $aliasName
+            inheritsFrom = $fabricVer.Name
+            type = 'release'
+            releaseTime = '2026-05-31T00:00:00+00:00'
+            time = (Get-Date).ToString('yyyy-MM-ddTHH:mm:sszzz')
+        } | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText($aliasJsonPath, $aliasJson, [System.Text.UTF8Encoding]::new($false))
+        Ok "גרסה: '$aliasName' (מבוססת על $($fabricVer.Name))"
+    } catch { Write-Host "  ⚠ לא נוצרה גרסת '$aliasName' — נסה ידנית" -ForegroundColor Yellow }
+
     $profileName = "Elitzur Games (Fabric $MC_VERSION)"
     $profileKey  = 'elitzur-fabric'
     $created = $true

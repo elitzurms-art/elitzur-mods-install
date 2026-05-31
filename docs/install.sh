@@ -82,6 +82,21 @@ FABRIC_VER=$(ls "$MC_DIR/versions" 2>/dev/null | grep "fabric-loader-.*$MC_VERSI
 if [ -z "$FABRIC_VER" ]; then
   echo "  ⚠ לא נמצאה גרסת Fabric — בחר ידנית ב-launcher"
 else
+  # Create a "version" alias so the name appears in launcher version dropdown
+  ALIAS_NAME="Elitzur Games"
+  ALIAS_DIR="$MC_DIR/versions/$ALIAS_NAME"
+  mkdir -p "$ALIAS_DIR"
+  cat > "$ALIAS_DIR/$ALIAS_NAME.json" <<EOF2
+{
+  "id": "$ALIAS_NAME",
+  "inheritsFrom": "$FABRIC_VER",
+  "type": "release",
+  "releaseTime": "2026-05-31T00:00:00+00:00",
+  "time": "2026-05-31T00:00:00+00:00"
+}
+EOF2
+  ok "גרסה: '$ALIAS_NAME' (מבוססת על $FABRIC_VER)"
+
   # Mojang + TLauncher candidate paths (Mac/Linux)
   if [[ "$OSTYPE" == "darwin"* ]]; then
     TL_HOME="$HOME/Library/Application Support/tlauncher"

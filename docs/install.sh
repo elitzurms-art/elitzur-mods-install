@@ -74,27 +74,43 @@ step 4 "מתקין Fabric Loader עבור MC $MC_VERSION..."
 "$JAVA" -jar "$INSTALLER" client -mcversion "$MC_VERSION" -dir "$MC_DIR" -noprofile >/dev/null 2>&1 || fail "Fabric installer נכשל"
 ok "Fabric Loader הותקן"
 
-# 4b. Create launcher profile
-step 4b "יוצר פרופיל ב-launcher..."
+# 4b. Create launcher profile (Mojang + TLauncher if present)
+step 4b "יוצר פרופיל ב-launchers..."
 FABRIC_VER=$(ls "$MC_DIR/versions" 2>/dev/null | grep "fabric-loader-.*$MC_VERSION$" | tail -1)
-if [ -n "$FABRIC_VER" ] && [ -f "$MC_DIR/launcher_profiles.json" ]; then
-  python3 -c "
-import json, datetime
-p = '$MC_DIR/launcher_profiles.json'
-data = json.load(open(p))
-data.setdefault('profiles', {})
-now = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
-data['profiles']['elitzur-fabric'] = {
-    'name': 'Elitzur Games (Fabric $MC_VERSION)',
-    'type': 'custom',
-    'created': now, 'lastUsed': now,
-    'icon': 'Furnace',
-    'lastVersionId': '$FABRIC_VER'
-}
-json.dump(data, open(p, 'w'), indent=2)
-" && ok "פרופיל נוצר: 'Elitzur Games (Fabric $MC_VERSION)'"
+if [ -z "$FABRIC_VER" ]; then
+  echo "  ⚠ לא נמצאה גרסת Fabric — בחר ידנית ב-launcher"
 else
-  echo "  ⚠ פרופיל לא נוצר אוטומטית — בחר fabric-loader ב-launcher ידנית"
+  # Mojang + TLauncher candidate paths (Mac/Linux)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    TL_HOME="$HOME/Library/Application Support/tlauncher"
+  else
+    TL_HOME="$HOME/.tlauncher"
+  fi
+  TARGETS=("$MC_DIR/launcher_profiles.json" "$MC_DIR/TlauncherProfiles.json" "$TL_HOME/TlauncherProfiles.json" "$TL_HOME/profiles.json")
+  for path in "${TARGETS[@]}"; do
+    [ -f "$path" ] || continue
+    FABRIC_VER="$FABRIC_VER" MC_VERSION="$MC_VERSION" P="$path" python3 - <<'PYEOF' && ok "פרופיל נוצר ב-$(basename "$path") (תיקייה: $(dirname "$path"))" || echo "  ⚠ פרופיל לא נוצר ב-$path"
+import json, os, datetime
+p = os.environ["P"]
+try:
+    data = json.load(open(p))
+except Exception:
+    data = {}
+data.setdefault("profiles", {})
+now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+data["profiles"]["elitzur-fabric"] = {
+    "name": "Elitzur Games (Fabric " + os.environ["MC_VERSION"] + ")",
+    "type": "custom",
+    "created": now, "lastUsed": now,
+    "icon": "Furnace",
+    "lastVersionId": os.environ["FABRIC_VER"]
+}
+# TLauncher uses selectedProfile to highlight on open
+if "tlauncher" in os.path.basename(p).lower() or "tlauncher" in p.lower():
+    data["selectedProfile"] = "elitzur-fabric"
+json.dump(data, open(p, "w"), indent=2)
+PYEOF
+  done
 fi
 
 # 5. Download mods

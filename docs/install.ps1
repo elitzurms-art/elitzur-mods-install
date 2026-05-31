@@ -108,28 +108,55 @@ if ($p.ExitCode -ne 0) {
 }
 Ok "Fabric Loader installed"
 
-# 4b. Create launcher profile
-Step '4b' 'יוצר פרופיל ב-launcher...'
-$profilesPath = "$MC_DIR\launcher_profiles.json"
-if (Test-Path $profilesPath) {
-    try {
-        $profiles = Get-Content $profilesPath -Raw | ConvertFrom-Json
-        if (-not $profiles.profiles) { $profiles | Add-Member -NotePropertyName 'profiles' -NotePropertyValue (New-Object PSObject) -Force }
-        $fabricVer = Get-ChildItem "$MC_DIR\versions" -Directory | Where-Object { $_.Name -like "fabric-loader-*-$MC_VERSION" } | Select-Object -Last 1
-        if ($fabricVer) {
-            $newProfile = [PSCustomObject]@{
-                name = "Elitzur Games (Fabric $MC_VERSION)"
-                type = 'custom'
+# 4b. Create launcher profile (official Mojang launcher + TLauncher if present)
+Step '4b' 'יוצר פרופיל ב-launchers...'
+$fabricVer = Get-ChildItem "$MC_DIR\versions" -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "fabric-loader-*-$MC_VERSION" } | Select-Object -Last 1
+if (-not $fabricVer) { Write-Host "  ⚠ לא נמצאה גרסת Fabric — בחר ידנית ב-launcher" -ForegroundColor Yellow }
+else {
+    $profileName = "Elitzur Games (Fabric $MC_VERSION)"
+    $profileKey  = 'elitzur-fabric'
+    $created = $true
+
+    # ---- 1) Official Mojang launcher ----
+    $mojangPath = "$MC_DIR\launcher_profiles.json"
+    if (Test-Path $mojangPath) {
+        try {
+            $mojang = Get-Content $mojangPath -Raw | ConvertFrom-Json
+            if (-not $mojang.profiles) { $mojang | Add-Member -NotePropertyName 'profiles' -NotePropertyValue (New-Object PSObject) -Force }
+            $newProf = [PSCustomObject]@{
+                name = $profileName; type = 'custom'
                 created = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
                 lastUsed = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
-                icon = 'Furnace'
-                lastVersionId = $fabricVer.Name
+                icon = 'Furnace'; lastVersionId = $fabricVer.Name
             }
-            $profiles.profiles | Add-Member -NotePropertyName 'elitzur-fabric' -NotePropertyValue $newProfile -Force
-            $profiles | ConvertTo-Json -Depth 10 | Set-Content -Path $profilesPath -Encoding UTF8
-            Ok "פרופיל נוצר: 'Elitzur Games (Fabric $MC_VERSION)'"
+            $mojang.profiles | Add-Member -NotePropertyName $profileKey -NotePropertyValue $newProf -Force
+            $mojang | ConvertTo-Json -Depth 10 | Set-Content -Path $mojangPath -Encoding UTF8
+            Ok "Mojang Launcher: '$profileName'"
+        } catch { Write-Host "  ⚠ פרופיל ב-Mojang Launcher לא נוצר אוטומטית" -ForegroundColor Yellow }
+    }
+
+    # ---- 2) TLauncher ----
+    $tlPaths = @("$MC_DIR\TlauncherProfiles.json", "$env:APPDATA\.tlauncher\TlauncherProfiles.json", "$env:APPDATA\.tlauncher\profiles.json")
+    foreach ($tlPath in $tlPaths) {
+        if (Test-Path $tlPath) {
+            try {
+                $tlRaw = Get-Content $tlPath -Raw
+                $tl = if ([string]::IsNullOrWhiteSpace($tlRaw)) { [PSCustomObject]@{ profiles = (New-Object PSObject) } } else { $tlRaw | ConvertFrom-Json }
+                if (-not $tl.profiles) { $tl | Add-Member -NotePropertyName 'profiles' -NotePropertyValue (New-Object PSObject) -Force }
+                $tlProf = [PSCustomObject]@{
+                    name = $profileName; type = 'custom'
+                    created = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+                    lastUsed = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+                    icon = 'Furnace'; lastVersionId = $fabricVer.Name
+                }
+                $tl.profiles | Add-Member -NotePropertyName $profileKey -NotePropertyValue $tlProf -Force
+                # set as selected so user sees it immediately
+                $tl | Add-Member -NotePropertyName 'selectedProfile' -NotePropertyValue $profileKey -Force
+                $tl | ConvertTo-Json -Depth 10 | Set-Content -Path $tlPath -Encoding UTF8
+                Ok "TLauncher: '$profileName' (ב-$tlPath)"
+            } catch { Write-Host "  ⚠ TLauncher profile (ב-$tlPath) לא נוצר אוטומטית" -ForegroundColor Yellow }
         }
-    } catch { Write-Host "  ⚠ פרופיל לא נוצר אוטומטית — בחר fabric-loader ב-launcher ידנית" -ForegroundColor Yellow }
+    }
 }
 
 # 5. Download mods

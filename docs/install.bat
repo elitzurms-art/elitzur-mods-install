@@ -1,14 +1,13 @@
 @echo off
-chcp 65001 >nul
-title Elitzur Games - Mod Installer
+title Elitzur Games Installer
 cls
 echo.
 echo  Elitzur Games - Mod Installer
-echo  ================================
+echo  =============================
 echo.
-echo  מתחיל התקנה אוטומטית...
+echo  Starting auto-install...
 echo.
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -Scope Process Bypass -Force; irm https://elitzurms-art.github.io/elitzur-mods-install/install.ps1 | iex"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& {Set-ExecutionPolicy -Scope Process Bypass -Force; iex (irm https://elitzurms-art.github.io/elitzur-mods-install/install.ps1)}"
 echo.
-echo  לחץ Enter כדי לסגור.
+echo  Press any key to close.
 pause >nul

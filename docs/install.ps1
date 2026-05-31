@@ -36,6 +36,29 @@ Write-Host "==========================================" -ForegroundColor Yellow
 Write-Host " Elitzur Games — Voice Chat + Fullbright Installer" -ForegroundColor Yellow
 Write-Host "==========================================" -ForegroundColor Yellow
 
+# 0. Make sure Minecraft / launcher are closed (they lock files we need to replace)
+Step 0 'בודק ש-Minecraft סגור...'
+$lockingProcs = @()
+foreach ($p in 'Minecraft*','javaw','MinecraftLauncher*') {
+    Get-Process -Name $p -ErrorAction SilentlyContinue | ForEach-Object { $lockingProcs += $_ }
+}
+if ($lockingProcs.Count -gt 0) {
+    Write-Host ""
+    Write-Host "  ⚠ נמצאו תהליכים של Minecraft פתוחים:" -ForegroundColor Yellow
+    $lockingProcs | ForEach-Object { Write-Host "    PID $($_.Id) — $($_.ProcessName)" -ForegroundColor Gray }
+    Write-Host ""
+    Write-Host "  סגור את Minecraft Launcher והמשחק לפני שתמשיך." -ForegroundColor Yellow
+    $ans = Read-Host "  כדי לסגור אוטומטית הקלד Y, אחרת Enter לעצירה"
+    if ($ans -eq 'Y' -or $ans -eq 'y') {
+        $lockingProcs | ForEach-Object { try { Stop-Process -Id $_.Id -Force -ErrorAction Stop; Write-Host "    ✓ נסגר $($_.ProcessName)" -ForegroundColor Green } catch { Write-Host "    ✗ לא הצלחתי לסגור $($_.ProcessName)" -ForegroundColor Red } }
+        Start-Sleep -Seconds 2
+    } else {
+        Fail "בטל: סגור את Minecraft והרץ שוב."
+    }
+} else {
+    Ok "Minecraft סגור"
+}
+
 # 1. Find Java
 Step 1 'מאתר Java...'
 $java = $null
@@ -70,6 +93,13 @@ $logOut = "$tmp\fabric-installer.out.log"
 $logErr = "$tmp\fabric-installer.err.log"
 $p = Start-Process -FilePath $java -ArgumentList $javaArgs -PassThru -Wait -NoNewWindow -RedirectStandardOutput $logOut -RedirectStandardError $logErr
 if ($p.ExitCode -ne 0) {
+    $errText = ''
+    if (Test-Path $logErr) { $errText = Get-Content $logErr -Raw -ErrorAction SilentlyContinue }
+    if ($errText -match 'being used by another process') {
+        Write-Host ""
+        Write-Host "  ⚠ קובץ נעול ע""י תהליך אחר. סגור את Minecraft Launcher והמשחק ונסה שוב." -ForegroundColor Yellow
+        Fail "Minecraft פתוח — סגור אותו והרץ את ה-installer שוב."
+    }
     Write-Host ""
     Write-Host "  Fabric installer output:" -ForegroundColor Yellow
     if (Test-Path $logOut) { Get-Content $logOut -ErrorAction SilentlyContinue | Select-Object -Last 12 | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray } }

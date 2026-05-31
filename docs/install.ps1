@@ -65,10 +65,18 @@ Ok "Fabric installer הורד"
 
 # 4. Run Fabric installer
 Step 4 "מתקין Fabric Loader עבור MC $MC_VERSION..."
-$args = @('-jar', $installerJar, 'client', '-mcversion', $MC_VERSION, '-dir', $MC_DIR, '-noprofile')
-$p = Start-Process -FilePath $java -ArgumentList $args -PassThru -Wait -WindowStyle Hidden
-if ($p.ExitCode -ne 0) { Fail "Fabric installer נכשל (exit $($p.ExitCode))" }
-Ok "Fabric Loader הותקן"
+$javaArgs = @('-jar', $installerJar, 'client', '-mcversion', $MC_VERSION, '-dir', $MC_DIR, '-noprofile')
+$logOut = "$tmp\fabric-installer.out.log"
+$logErr = "$tmp\fabric-installer.err.log"
+$p = Start-Process -FilePath $java -ArgumentList $javaArgs -PassThru -Wait -NoNewWindow -RedirectStandardOutput $logOut -RedirectStandardError $logErr
+if ($p.ExitCode -ne 0) {
+    Write-Host ""
+    Write-Host "  Fabric installer output:" -ForegroundColor Yellow
+    if (Test-Path $logOut) { Get-Content $logOut -ErrorAction SilentlyContinue | Select-Object -Last 12 | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray } }
+    if (Test-Path $logErr) { Get-Content $logErr -ErrorAction SilentlyContinue | Select-Object -Last 12 | ForEach-Object { Write-Host "    $_" -ForegroundColor Red } }
+    Fail "Fabric installer failed (exit $($p.ExitCode)). See output above. Java: $java"
+}
+Ok "Fabric Loader installed"
 
 # 4b. Create launcher profile
 Step '4b' 'יוצר פרופיל ב-launcher...'

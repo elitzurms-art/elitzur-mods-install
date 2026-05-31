@@ -2,17 +2,23 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>התקנת Voice Chat — Elitzur Games</title>
+<title>התקנה — Elitzur Games</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background:#1a1a2e; color:#eee; max-width: 760px; margin: 0 auto; padding: 20px; line-height: 1.6; }
   h1 { color:#09add3; }
   h2 { color:#ffd200; border-bottom: 1px solid #444; padding-bottom: 5px; }
-  .tab-bar { display:flex; gap:8px; margin-bottom:16px; }
-  .tab { flex:1; padding:10px; background:#16213e; border:none; color:#ccc; cursor:pointer; border-radius:6px; font-size:15px; }
-  .tab.active { background:#09add3; color:#000; font-weight:bold; }
-  .panel { display:none; }
-  .panel.active { display:block; }
+  .big-download {
+    display:block; margin:30px auto; padding:24px 40px;
+    background: linear-gradient(135deg, #09add3, #4CAF50);
+    color:#000; text-decoration:none; text-align:center;
+    border-radius:14px; font-size:24px; font-weight:bold;
+    box-shadow: 0 8px 24px rgba(9,173,211,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    max-width: 480px;
+  }
+  .big-download:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(9,173,211,0.5); }
+  .small-note { text-align:center; color:#888; font-size:13px; margin-top:-15px; margin-bottom:25px; }
   .step { background:#16213e; padding:12px 16px; margin:10px 0; border-radius:8px; border-right:4px solid #09add3; }
   .cmd { background:#0d0d1a; padding:10px; border-radius:5px; overflow-x:auto; direction:ltr; text-align:left; font-family: Consolas, Monaco, monospace; font-size:13px; color:#a5e75f; user-select:all; }
   .copy-btn { background:#ff9966; border:none; color:#000; padding:6px 12px; border-radius:5px; cursor:pointer; font-weight:bold; margin-top:5px; }
@@ -21,70 +27,52 @@
   .warn { background:#3a2a1a; padding:10px; border-radius:6px; border-right:4px solid #ffd200; margin: 10px 0; }
   ol { padding-right: 24px; }
   ol > li { margin: 8px 0; }
+  details { background:#16213e; padding:12px 16px; margin:15px 0; border-radius:8px; }
+  details summary { cursor:pointer; color:#ffd200; font-weight:bold; }
+  .features { columns: 2; column-gap: 20px; }
+  .features li { break-inside: avoid; }
+  @media (max-width: 600px) { .features { columns: 1; } }
 </style>
 </head>
 <body>
-<h1>🎙️ התקנת Voice Chat + Resource Packs — Elitzur Games</h1>
-<p>ההתקנה תוסיף ל-Minecraft שלך:</p>
-<ul>
-  <li><b>Simple Voice Chat</b> — דיבור עם שחקנים אחרים</li>
-  <li><b>Xaero's Minimap</b> — מפת מיני בפינת המסך</li>
-  <li><b>Sodium</b> + <b>Sodium Extra</b> — אופטימיזציית רינדור (יותר FPS)</li>
-  <li><b>LambDynamicLights</b> — אור דינמי (לפיד ביד מאיר)</li>
+<h1>🎮 התקנה אוטומטית — Elitzur Games</h1>
+
+<a id="big-dl" class="big-download" href="#">⬇ הורד את ה-Installer</a>
+<p class="small-note" id="os-detect">מזהה את מערכת ההפעלה...</p>
+
+<div class="step">
+  <b>איך להשתמש:</b>
+  <ol>
+    <li>וודא ש-Minecraft הופעל פעם אחת לפחות (כדי שה-launcher יוריד Java)</li>
+    <li>לחץ על הכפתור הירוק למעלה — יורד קובץ קטן</li>
+    <li><b>לחץ עליו פעמיים</b> — חלון יקפוץ ויתקין הכל אוטומטית</li>
+    <li>אחרי שמופיע "ההתקנה הסתיימה" — פתח Minecraft Launcher, בחר את הפרופיל <b>"Elitzur Games (Fabric 26.1.2)"</b> ולחץ Play</li>
+  </ol>
+</div>
+
+<div class="warn" id="mac-warn" style="display:none">
+  ⚠ <b>macOS</b>: אם Mac חוסם פתיחה של הקובץ — לחץ <b>קליק ימני → Open</b> ואשר.
+</div>
+<div class="warn" id="win-warn" style="display:none">
+  ⚠ <b>Windows</b>: אם Windows מציג "Windows protected your PC" — לחץ <b>"More info" → "Run anyway"</b>.
+</div>
+
+<h2>מה ההתקנה כוללת</h2>
+<ul class="features">
+  <li><b>Simple Voice Chat</b> — דיבור עם שחקנים</li>
+  <li><b>Xaero's Minimap</b> — מפת מיני</li>
+  <li><b>Sodium</b> + <b>Sodium Extra</b> — יותר FPS</li>
+  <li><b>LambDynamicLights</b> — אור דינמי</li>
   <li><b>Emotecraft</b> — אנימציות תנועה</li>
   <li><b>Zoomify</b> — זום עם C</li>
-  <li><b>Fullbright UB</b> — תמיד יש אור, גם במערות</li>
-  <li><b>Golden-Carrot Hunger Bar</b> — שדרוג ויזואלי לבר רעב</li>
-  <li><b>Fancy Heart Bar</b> — שדרוג ויזואלי לבר חיים</li>
-  <li>Fabric Loader + Fabric API (התשתית של פבריק)</li>
+  <li><b>Fullbright UB</b> — תמיד אור</li>
+  <li><b>Golden-Carrot Hunger Bar</b></li>
+  <li><b>Fancy Heart Bar</b></li>
+  <li>Fabric Loader + Fabric API</li>
 </ul>
-<p>בחר את מערכת ההפעלה שלך:</p>
 
-<div class="tab-bar">
-  <button class="tab" data-target="win">Windows</button>
-  <button class="tab" data-target="mac">macOS</button>
-  <button class="tab" data-target="manual">התקנה ידנית</button>
-</div>
-
-<!-- Windows -->
-<div id="win" class="panel">
-  <h2>התקנה אוטומטית — Windows</h2>
-  <div class="warn">⚠ <b>חשוב</b>: הפעל את Minecraft <u>פעם אחת</u> לפני שאתה ממשיך, כדי שה-launcher יוריד Java.</div>
-  <ol>
-    <li>לחץ <b>Win+X</b> ובחר <b>"Windows PowerShell"</b> (לא Terminal, לא CMD)</li>
-    <li>העתק והדבק את הפקודה הזו, ולחץ Enter:</li>
-  </ol>
-  <div class="cmd" id="cmd-win">Set-ExecutionPolicy -Scope Process Bypass -Force; irm https://elitzurms-art.github.io/elitzur-mods-install/install.ps1 | iex</div>
-  <button class="copy-btn" data-copy="cmd-win">📋 העתק</button>
-  <ol start="3">
-    <li>חכה עד שיופיע "ההתקנה הסתיימה"</li>
-    <li>פתח את Minecraft Launcher</li>
-    <li>בחר את הפרופיל <b>"Elitzur Games (Fabric 26.1.2)"</b></li>
-    <li>לחץ Play והתחבר לשרת — תראה אייקון מיקרופון בפינה</li>
-  </ol>
-</div>
-
-<!-- macOS -->
-<div id="mac" class="panel">
-  <h2>התקנה אוטומטית — macOS</h2>
-  <div class="warn">⚠ <b>חשוב</b>: הפעל את Minecraft <u>פעם אחת</u> לפני שאתה ממשיך.</div>
-  <ol>
-    <li>פתח את <b>Terminal</b> (אפליקציה ב-Applications → Utilities)</li>
-    <li>העתק והדבק את הפקודה הזו, ולחץ Enter:</li>
-  </ol>
-  <div class="cmd" id="cmd-mac">curl -fsSL https://elitzurms-art.github.io/elitzur-mods-install/install.sh | bash</div>
-  <button class="copy-btn" data-copy="cmd-mac">📋 העתק</button>
-  <ol start="3">
-    <li>חכה עד שיופיע "ההתקנה הסתיימה"</li>
-    <li>פתח את Minecraft Launcher</li>
-    <li>בחר את הפרופיל <b>"Elitzur Games (Fabric 26.1.2)"</b></li>
-    <li>לחץ Play והתחבר לשרת</li>
-  </ol>
-</div>
-
-<!-- Manual -->
-<div id="manual" class="panel">
-  <h2>התקנה ידנית (אם האוטומטי לא עובד)</h2>
+<details>
+  <summary>התקנה ידנית (אם האוטומטית לא עובדת)</summary>
   <div class="step">
     <b>שלב 1: התקן Fabric Loader</b><br>
     <a href="https://fabricmc.net/use/installer/" target="_blank">https://fabricmc.net/use/installer/</a><br>
@@ -92,20 +80,23 @@
   </div>
   <div class="step">
     <b>שלב 2: פתח את תיקיית mods</b><br>
-    <b>Windows:</b> <code>%APPDATA%\.minecraft\mods\</code> (אם לא קיימת — צור)<br>
+    <b>Windows:</b> <code>%APPDATA%\.minecraft\mods\</code><br>
     <b>macOS:</b> <code>~/Library/Application Support/minecraft/mods/</code>
   </div>
   <div class="step">
     <b>שלב 3: הורד לתיקיית mods:</b>
     <ul>
-      <li><a href="https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric-api-0.150.0%2B26.1.2.jar">Fabric API (0.150.0+26.1.2)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar">Simple Voice Chat (2.6.18+26.1.2)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/1bokaNcj/versions/65OfA4xM/xaerominimap-fabric-26.1.2-25.3.14.jar">Xaero's Minimap (fabric 26.1.2-25.3.14)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/AANobbMI/versions/eRJU33Hp/sodium-fabric-0.8.12%2Bmc26.1.2.jar">Sodium (0.8.12+mc26.1.2)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/pZ2wrerK/versions/ZkP5YEad/emotecraft-for-MC26.1.2-3.3.0-a.build.150.jar">Emotecraft (3.3.0-a.build.150)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/w7ThoJFB/versions/3zi0VJPK/zoomify-2.16.0%2B26.1.jar">Zoomify (2.16.0+26.1)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar">Sodium Extra (0.8.7+mc26.1.1)</a></li>
-      <li><a href="https://cdn.modrinth.com/data/yBW8D80W/versions/UnhzVQJV/lambdynamiclights-4.10.2%2B26.1.2.jar">LambDynamicLights (4.10.2+26.1.2)</a></li>
+      <li><a href="https://cdn.modrinth.com/data/P7dR8mSH/versions/E1mjhYMF/fabric-api-0.150.0%2B26.1.2.jar">Fabric API</a></li>
+      <li><a href="https://cdn.modrinth.com/data/9eGKb6K1/versions/DpT86E4Q/voicechat-fabric-2.6.18%2B26.1.2.jar">Simple Voice Chat</a></li>
+      <li><a href="https://cdn.modrinth.com/data/1bokaNcj/versions/65OfA4xM/xaerominimap-fabric-26.1.2-25.3.14.jar">Xaero's Minimap</a></li>
+      <li><a href="https://cdn.modrinth.com/data/AANobbMI/versions/eRJU33Hp/sodium-fabric-0.8.12%2Bmc26.1.2.jar">Sodium</a></li>
+      <li><a href="https://cdn.modrinth.com/data/PtjYWJkn/versions/1bz3AMCV/sodium-extra-fabric-0.8.7%2Bmc26.1.1.jar">Sodium Extra</a></li>
+      <li><a href="https://cdn.modrinth.com/data/yBW8D80W/versions/UnhzVQJV/lambdynamiclights-4.10.2%2B26.1.2.jar">LambDynamicLights</a></li>
+      <li><a href="https://cdn.modrinth.com/data/pZ2wrerK/versions/ZkP5YEad/emotecraft-for-MC26.1.2-3.3.0-a.build.150.jar">Emotecraft</a></li>
+      <li><a href="https://cdn.modrinth.com/data/w7ThoJFB/versions/3zi0VJPK/zoomify-2.16.0%2B26.1.jar">Zoomify</a></li>
+      <li><a href="https://cdn.modrinth.com/data/ha1mEyJS/versions/Cqy4sfYU/PlayerAnimationLibMerged-1.2.3%2Bmc.26.1.jar">Player Animation Library</a> (תלות)</li>
+      <li><a href="https://cdn.modrinth.com/data/Ha28R6CL/versions/2i87JpYj/fabric-language-kotlin-1.13.11%2Bkotlin.2.3.21.jar">Fabric Language Kotlin</a> (תלות)</li>
+      <li><a href="https://cdn.modrinth.com/data/1eAoo2KR/versions/hzww5Tor/yet_another_config_lib_v3-3.9.3%2B26.1-fabric.jar">YACL</a> (תלות)</li>
     </ul>
     <b>שלב 3ב: הורד לתיקיית resourcepacks:</b>
     <ul>
@@ -118,27 +109,40 @@
   <div class="step">
     <b>שלב 4: ב-launcher</b> — בחר פרופיל "fabric-loader-26.1.2" ולחץ Play.
   </div>
-</div>
+</details>
+
+<details>
+  <summary>התקנה דרך פקודה בטרמינל</summary>
+  <h2>Windows (PowerShell)</h2>
+  <div class="cmd" id="cmd-win">Set-ExecutionPolicy -Scope Process Bypass -Force; irm https://elitzurms-art.github.io/elitzur-mods-install/install.ps1 | iex</div>
+  <button class="copy-btn" data-copy="cmd-win">📋 העתק</button>
+  <h2>macOS (Terminal)</h2>
+  <div class="cmd" id="cmd-mac">curl -fsSL https://elitzurms-art.github.io/elitzur-mods-install/install.sh | bash</div>
+  <button class="copy-btn" data-copy="cmd-mac">📋 העתק</button>
+</details>
 
 <hr style="margin-top:30px; border-color:#333">
 <p style="text-align:center; color:#666; font-size:13px;">נתקלת בבעיה? פנה למפעיל השרת.</p>
 
 <script>
-const tabs = document.querySelectorAll('.tab');
-const panels = document.querySelectorAll('.panel');
-function show(name) {
-  tabs.forEach(t => t.classList.toggle('active', t.dataset.target === name));
-  panels.forEach(p => p.classList.toggle('active', p.id === name));
-}
-tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.target)));
-
-// Auto-detect OS
 const ua = navigator.userAgent + navigator.platform;
-if (/Win/.test(ua)) show('win');
-else if (/Mac|iPhone|iPad/.test(ua)) show('mac');
-else show('manual');
+const isWin = /Win/.test(ua);
+const isMac = /Mac|iPhone|iPad/.test(ua);
+const dl = document.getElementById('big-dl');
+const note = document.getElementById('os-detect');
+if (isWin) {
+  dl.href = 'install.bat'; dl.download = 'elitzur-installer.bat';
+  note.textContent = 'מזוהה Windows — יוריד install.bat';
+  document.getElementById('win-warn').style.display = 'block';
+} else if (isMac) {
+  dl.href = 'install.command'; dl.download = 'elitzur-installer.command';
+  note.textContent = 'מזוהה macOS — יוריד install.command';
+  document.getElementById('mac-warn').style.display = 'block';
+} else {
+  dl.style.display = 'none';
+  note.innerHTML = 'OS לא זוהה. השתמש בהתקנה הידנית למטה.';
+}
 
-// Copy buttons
 document.querySelectorAll('.copy-btn').forEach(b => b.addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent.trim());
   const orig = b.textContent;

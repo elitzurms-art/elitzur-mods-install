@@ -132,15 +132,29 @@ const dl = document.getElementById('big-dl');
 const note = document.getElementById('os-detect');
 if (isWin) {
   dl.href = 'install.bat'; dl.download = 'elitzur-installer.bat';
-  note.textContent = 'מזוהה Windows — יוריד install.bat';
+  note.textContent = '⬇ ההורדה התחילה אוטומטית — Windows installer';
   document.getElementById('win-warn').style.display = 'block';
 } else if (isMac) {
   dl.href = 'install.command'; dl.download = 'elitzur-installer.command';
-  note.textContent = 'מזוהה macOS — יוריד install.command';
+  note.textContent = '⬇ ההורדה התחילה אוטומטית — macOS installer';
   document.getElementById('mac-warn').style.display = 'block';
 } else {
   dl.style.display = 'none';
   note.innerHTML = 'OS לא זוהה. השתמש בהתקנה הידנית למטה.';
+}
+
+// Auto-trigger download immediately when page loads
+if (isWin || isMac) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = dl.href;
+      a.download = dl.download;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, 200);
+  });
 }
 
 document.querySelectorAll('.copy-btn').forEach(b => b.addEventListener('click', () => {

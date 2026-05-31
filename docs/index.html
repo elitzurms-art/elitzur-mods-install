@@ -51,7 +51,8 @@
 </div>
 
 <div class="warn" id="mac-warn" style="display:none">
-  ⚠ <b>macOS</b>: אם Mac חוסם פתיחה של הקובץ — לחץ <b>קליק ימני → Open</b> ואשר.
+  📦 <b>macOS</b>: מקבל קובץ ZIP — לחץ עליו פעמיים לחילוץ, ואז לחץ פעמיים על <code>install.command</code>.<br>
+  אם נחסם — קליק ימני על <code>install.command</code> → <b>Open</b> → אשר.
 </div>
 <div class="warn" id="win-warn" style="display:none">
   ⚠ <b>Windows</b>: אם Windows מציג "Windows protected your PC" — לחץ <b>"More info" → "Run anyway"</b>.
@@ -135,7 +136,7 @@ if (isWin) {
   note.textContent = '⬇ ההורדה התחילה אוטומטית — Windows installer';
   document.getElementById('win-warn').style.display = 'block';
 } else if (isMac) {
-  dl.href = 'install.command'; dl.download = 'elitzur-installer.command';
+  dl.href = 'install-mac.zip'; dl.download = 'elitzur-installer.zip';
   note.textContent = '⬇ ההורדה התחילה אוטומטית — macOS installer';
   document.getElementById('mac-warn').style.display = 'block';
 } else {

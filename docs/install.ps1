@@ -122,8 +122,12 @@ else {
     # ---- 1) Official Mojang launcher ----
     $mojangPath = "$MC_DIR\launcher_profiles.json"
     if (Test-Path $mojangPath) {
+        $backupPath = "$mojangPath.elitzur-backup"
         try {
-            $mojang = Get-Content $mojangPath -Raw | ConvertFrom-Json
+            # Back up first in case of corruption
+            Copy-Item $mojangPath $backupPath -Force
+            $rawText = Get-Content $mojangPath -Raw
+            $mojang = $rawText | ConvertFrom-Json
             if (-not $mojang.profiles) { $mojang | Add-Member -NotePropertyName 'profiles' -NotePropertyValue (New-Object PSObject) -Force }
             $newProf = [PSCustomObject]@{
                 name = $profileName; type = 'custom'
@@ -132,9 +136,19 @@ else {
                 icon = 'Furnace'; lastVersionId = $fabricVer.Name
             }
             $mojang.profiles | Add-Member -NotePropertyName $profileKey -NotePropertyValue $newProf -Force
-            $mojang | ConvertTo-Json -Depth 10 | Set-Content -Path $mojangPath -Encoding UTF8
+            $jsonText = $mojang | ConvertTo-Json -Depth 20
+            # Write WITHOUT BOM (Mojang launcher rejects BOM in launcher_profiles.json)
+            [System.IO.File]::WriteAllText($mojangPath, $jsonText, [System.Text.UTF8Encoding]::new($false))
+            # Sanity check — re-read and verify it parses
+            $verify = Get-Content $mojangPath -Raw | ConvertFrom-Json
+            if (-not $verify.profiles) { throw "verification failed" }
+            Remove-Item $backupPath -ErrorAction SilentlyContinue
             Ok "Mojang Launcher: '$profileName'"
-        } catch { Write-Host "  ⚠ פרופיל ב-Mojang Launcher לא נוצר אוטומטית" -ForegroundColor Yellow }
+        } catch {
+            # Restore backup if anything went wrong
+            if (Test-Path $backupPath) { Move-Item $backupPath $mojangPath -Force }
+            Write-Host "  ⚠ פרופיל ב-Mojang Launcher לא נוצר אוטומטית — בחר ידנית את הגרסה $($fabricVer.Name)" -ForegroundColor Yellow
+        }
     }
 
     # ---- 2) TLauncher ----

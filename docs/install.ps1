@@ -24,6 +24,8 @@ $GOLDCARROT   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/Gold
 $GC_FILE      = 'Golden-Carrot Hunger Bar.zip'
 $FANCYHEART   = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/fancy-heart-bar-1-21.zip'
 $FH_FILE      = 'fancy-heart-bar-1-21.zip'
+$AMONGUS      = 'https://elitzurms-art.github.io/elitzur-mods-install/packs/Among%20Us%20in%20Minecraft%20v3_RP.zip'
+$AU_FILE      = 'Among Us in Minecraft v3_RP.zip'
 $MC_DIR       = "$env:APPDATA\.minecraft"
 $MODS_DIR     = "$MC_DIR\mods"
 $RP_DIR       = "$MC_DIR\resourcepacks"
@@ -207,6 +209,8 @@ Invoke-WebRequest -Uri $GOLDCARROT -OutFile "$RP_DIR\$GC_FILE" -UseBasicParsing
 Ok "Golden-Carrot Hunger Bar"
 Invoke-WebRequest -Uri $FANCYHEART -OutFile "$RP_DIR\$FH_FILE" -UseBasicParsing
 Ok "Fancy Heart Bar"
+Invoke-WebRequest -Uri $AMONGUS -OutFile "$RP_DIR\$AU_FILE" -UseBasicParsing
+Ok "Among Us in Minecraft v3 (לשרת imposter)"
 
 # 6b. Enable in options.txt
 Step '6b' 'מפעיל את ה-resource packs ב-options.txt...'

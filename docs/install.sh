@@ -26,6 +26,8 @@ GOLDCARROT="https://elitzurms-art.github.io/elitzur-mods-install/packs/Golden-Ca
 GC_FILE="Golden-Carrot Hunger Bar.zip"
 FANCYHEART="https://elitzurms-art.github.io/elitzur-mods-install/packs/fancy-heart-bar-1-21.zip"
 FH_FILE="fancy-heart-bar-1-21.zip"
+AMONGUS="https://elitzurms-art.github.io/elitzur-mods-install/packs/Among%20Us%20in%20Minecraft%20v3_RP.zip"
+AU_FILE="Among Us in Minecraft v3_RP.zip"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   MC_DIR="$HOME/Library/Application Support/minecraft"
@@ -151,21 +153,17 @@ curl -fsSL "$GOLDCARROT" -o "$RP_DIR/$GC_FILE"
 ok "Golden-Carrot Hunger Bar"
 curl -fsSL "$FANCYHEART" -o "$RP_DIR/$FH_FILE"
 ok "Fancy Heart Bar"
+curl -fsSL "$AMONGUS" -o "$RP_DIR/$AU_FILE"
+ok "Among Us in Minecraft v3 (לשרת imposter)"
 
 step 6b "מפעיל את ה-resource packs ב-options.txt..."
 OPTIONS="$MC_DIR/options.txt"
 if [ -f "$OPTIONS" ]; then
-  FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית — תפעיל ידנית ב-Options → Resource Packs"
-import json, os
-p = os.environ.get("OPTIONS", "options.txt")
-import sys
-PYEOF
-  # actual logic
-  FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" OPT="$OPTIONS" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית"
+  FB="$FB_FILE" GC="$GC_FILE" FH="$FH_FILE" AU="$AU_FILE" OPT="$OPTIONS" python3 - <<'PYEOF' && ok "כל ה-packs פעילים בהגדרות" || echo "  ⚠ לא הצלחתי להפעיל אוטומטית"
 import json, os
 p = os.environ["OPT"]
-# Order matters: in options.txt the END of the array = TOP of Selected GUI (highest priority).
-# We want Fancy-Heart at very top, then Golden-Carrot, then Fullbright underneath.
+# In options.txt resourcePacks array, the END = TOP of Selected GUI (highest priority).
+# Among Us pack stays DISABLED by default (player enables when joining imposter server).
 ours = ["file/" + os.environ["FB"], "file/" + os.environ["GC"], "file/" + os.environ["FH"]]
 lines = open(p).read().splitlines()
 found = False
@@ -180,7 +178,7 @@ for line in lines:
         for o in ours:
             while o in arr:
                 arr.remove(o)
-        arr.extend(ours)  # append at end = top of Selected
+        arr.extend(ours)
         out.append("resourcePacks:" + json.dumps(arr, ensure_ascii=False))
     else:
         out.append(line)

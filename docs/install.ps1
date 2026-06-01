@@ -119,18 +119,20 @@ else {
     $aliasName = "Elitzur Games"
     $aliasDir = "$MC_DIR\versions\$aliasName"
     try {
-        if (-not (Test-Path $aliasDir)) { New-Item -ItemType Directory -Path $aliasDir | Out-Null }
+        if (-not (Test-Path $aliasDir)) { New-Item -ItemType Directory -Path $aliasDir -Force | Out-Null }
         $aliasJsonPath = "$aliasDir\$aliasName.json"
-        $aliasJson = @{
-            id = $aliasName
-            inheritsFrom = $fabricVer.Name
-            type = 'release'
-            releaseTime = '2026-05-31T00:00:00+00:00'
-            time = (Get-Date).ToString('yyyy-MM-ddTHH:mm:sszzz')
-        } | ConvertTo-Json -Depth 10
+        # Build JSON manually to match exact format (PS ConvertTo-Json reorders/formats unpredictably)
+        $aliasJson = "{`n  `"id`": `"$aliasName`",`n  `"inheritsFrom`": `"$($fabricVer.Name)`",`n  `"type`": `"release`",`n  `"releaseTime`": `"2026-05-31T00:00:00+00:00`",`n  `"time`": `"2026-05-31T00:00:00+00:00`"`n}`n"
         [System.IO.File]::WriteAllText($aliasJsonPath, $aliasJson, [System.Text.UTF8Encoding]::new($false))
-        Ok "גרסה: '$aliasName' (מבוססת על $($fabricVer.Name))"
-    } catch { Write-Host "  ⚠ לא נוצרה גרסת '$aliasName' — נסה ידנית" -ForegroundColor Yellow }
+        # Verify
+        if ((Get-Content $aliasJsonPath -Raw) -match '"inheritsFrom"') {
+            Ok "גרסה: '$aliasName' (מבוססת על $($fabricVer.Name))"
+        } else {
+            Write-Host "  ⚠ קובץ הגרסה נכתב אך נראה לא תקין" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "  ⚠ לא נוצרה גרסת '$aliasName' — $($_.Exception.Message)" -ForegroundColor Yellow
+    }
 
     $profileName = "Elitzur Games (Fabric $MC_VERSION)"
     $profileKey  = 'elitzur-fabric'
